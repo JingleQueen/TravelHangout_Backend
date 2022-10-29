@@ -1,13 +1,18 @@
 import  Mongoose, {Schema} from "mongoose";
 
 const schema = new Schema({
-    id:{
+    packageId:{
         type: String,
         require: true
     },
-    packageTypeId: {
+    packageTypeObjRef: {
         type: Schema.Types.ObjectId,
         ref: 'Collection',
+        required: true
+    },
+    packageTypeId: {
+        type: String,
+        required: true
     },
     packageTypeName: {
         type: String,
@@ -36,11 +41,7 @@ const schema = new Schema({
             type: Number,
         }
     },
-    covers: [{
-        name: {
-            type: String
-        }
-    }],
+    covers: [{ type: String }],
     description: {
         type: String
     },

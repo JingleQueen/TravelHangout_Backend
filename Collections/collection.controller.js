@@ -1,3 +1,4 @@
+import moment from 'moment';
 import Collection from "./collection.model";
 
 export const listCollection = async (req, res) =>{
@@ -16,13 +17,13 @@ export const listCollection = async (req, res) =>{
 
 export const addCollection = async (req, res) =>{
     try{
-        let id = + new Date();
-        const featuredImage = req.file.originalname;
         const collectionName = req.body.collectionName;
+        const featuredImage = req.file.originalname;
+        let id = `PACKAGE-TYPE-${collectionName.toUpperCase()}-${moment().format('DDMMYYYYHHMMSS')}`;
         const collection = {
             featuredImage: featuredImage,
             collectionName: collectionName,
-            id
+            packageTypeId: id
         }
         console.log(collection)
         const newCollection = new Collection(collection)

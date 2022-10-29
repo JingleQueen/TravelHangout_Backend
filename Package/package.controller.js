@@ -1,4 +1,7 @@
+import moment from 'moment';
 import Packages from "./package.model";
+import Collection from '../Collections/collection.model';
+import mongoose from 'mongoose';
 
 export const listPackage = async (req , res)=>{
     let packageList = await Packages.find();
@@ -16,28 +19,51 @@ export const listPackage = async (req , res)=>{
 
 export const addPackage = async(req, res)=>{
     try{
-        let id = + new Date()
-        let {body : {name = null, destination = null, region = null, interest = null } } = req ||  null;
+        let {
+            name, 
+            destination, 
+            region, 
+            packageTypeName,
+            packageTypeFeaturedImage,
+            interest,
+            duration,
+            covers,
+            description,
+            price,
+            destinationType,
+            destinationName,
+        } = req.body
+        let packageId = `PACKAGE-${destination.toUpperCase()}-${moment().format('DDMMYYYYHHMMSS')}`;
+        let packageTypeId = `PACKAGE-TYPE-${packageTypeName.toUpperCase()}-${moment().format('DDMMYYYYHHMMSS')}`;
         const packages = {
+            packageId,
+            packageTypeId,
             name,
             destination,
             region,
-            interest
+            interest,
+            duration,
+            covers,
+            description,
+            price,
+            destinationType,
+            destinationName,
+            packageTypeName
         }
-        const newPackage = new Packages(packages)
-        let savedPackage = await newPackage.save();
-        let packageList = await Packages.find()
-        let data = packageList.map(item =>{
-            return {
-                name:item.name,
-                destination:item.destination,
-                region:item.region,
-                interest:item.interest
-            };
+        const newCollection = new Collection({
+            _id: new mongoose.Types.ObjectId(),
+            packageTypeId,
+            featuredImage: packageTypeFeaturedImage,
+            collectionName: packageTypeName
         })
-        res.status(200).json({status: true, data})
-    }catch(e){
-        console.log(e)
+        const newPackage = new Packages({...packages, packageTypeObjRef: newCollection._id})
+        newCollection.packages.push(newPackage._id)
+        let savedPackage = await newPackage.save();
+        let savedCollection = await newCollection.save();
+        res.status(200).json({status: true, savedPackage})
+    }catch(err){
+        console.log(err)
+        res.status(500).json({status: false, error: err.message})
     }
 }
 

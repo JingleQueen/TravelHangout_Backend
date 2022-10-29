@@ -14,7 +14,7 @@ const schema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Packages',
     }],
-    id:{
+    packageTypeId:{
         type:String,
     }
 })
