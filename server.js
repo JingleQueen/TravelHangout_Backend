@@ -2,10 +2,20 @@ import  express  from 'express';
 import  Mongoose  from 'mongoose';
 import cors from 'cors';
 import apiRouter from '.';
+import morgan from 'morgan';
+
 const app = express();
 app.use(cors())
 app.use(express.json());
-const dbUrl = "mongodb+srv://TravelHangout:bO55NJBnGVnDRPPn@cluster0.ec8stfm.mongodb.net/?retryWrites=true&w=majority"
+app.use(morgan("combined"));
+app.use(express.urlencoded({ extended: true }));
+
+let dbUrl;
+if(process.env.NODE_ENV === 'development') {
+  dbUrl = 'mongodb://localhost:27017/travel-hangouts'
+} else {
+  dbUrl = "mongodb+srv://TravelHangout:bO55NJBnGVnDRPPn@cluster0.ec8stfm.mongodb.net/?retryWrites=true&w=majority"
+}
 const dbOption = { useNewUrlParser: true, useUnifiedTopology: true };
 
 //connect database
@@ -20,5 +30,5 @@ app.listen( port, () =>{
 
 app.get("/", (req, res) => {
     res.send("Welcome to Travel Hangout");
-  });
+});
 app.use('/api', apiRouter);

@@ -17,28 +17,21 @@ export const listCollection = async (req, res) =>{
 export const addCollection = async (req, res) =>{
     try{
         let id = + new Date();
-        let {body : {featuredImage = null, collectionName = null, packages } } = req || null;
+        const featuredImage = req.file.originalname;
+        const collectionName = req.body.collectionName;
         const collection = {
-            featuredImage,
-            collectionName,
-            packages,
+            featuredImage: featuredImage,
+            collectionName: collectionName,
             id
         }
+        console.log(collection)
         const newCollection = new Collection(collection)
         let savedCollection = await newCollection.save();
         console.log(savedCollection, "savedCollection")
-        // let collectionList = await Collection.find();
-        // let data = collectionList.map(item =>{
-        //     return{
-        //         featuredImage: item.featuredImage,
-        //         collectionName: item.collectionName,
-        //         packages: item.packages,
-        //         id: item.id
-        //     };
-        // })
         res.status(200).json({status: true, savedCollection})
-    }catch(e){
-        console.log(e);
+    }catch(err){
+        console.log(err);
+        res.status(500).json({status: false, error: err.message})
     }
 }
 

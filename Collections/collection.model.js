@@ -3,20 +3,20 @@ import Mongoose, {Schema  } from "mongoose";
 const schema = new Schema({
     featuredImage:{
         type:String,
-        require: true
+        required: true
     },
     collectionName:{
         type:String,
-        require:true
+        required:true,
+        unique: true
     },
-    packages:{
-        type:String,
-        require:true
-    },
+    packages:[{
+        type: Schema.Types.ObjectId,
+        ref: 'Packages',
+    }],
     id:{
         type:String,
     }
-
 })
 
 const Collection = Mongoose.model('Collection',schema )
