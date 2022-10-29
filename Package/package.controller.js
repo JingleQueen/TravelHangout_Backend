@@ -19,6 +19,7 @@ export const listPackage = async (req , res)=>{
 
 export const addPackage = async(req, res)=>{
     try{
+        // Fetching all required variable from the req.body
         let {
             name, 
             destination, 
@@ -33,8 +34,28 @@ export const addPackage = async(req, res)=>{
             destinationType,
             destinationName,
         } = req.body
+
+        // Fetching package type or collection by name
+        const oldCollection = await Collection.findOne({collectionName: packageTypeName.toLowerCase()})
+
+        // Assigning custom package id
         let packageId = `PACKAGE-${destination.toUpperCase()}-${moment().format('DDMMYYYYHHMMSS')}`;
-        let packageTypeId = `PACKAGE-TYPE-${packageTypeName.toUpperCase()}-${moment().format('DDMMYYYYHHMMSS')}`;
+
+        // For deciding the packageTypeId or new Collection
+        let packageTypeId, newCollection;
+
+        if(oldCollection) {
+            packageTypeId = oldCollection.packageTypeId
+        } else {
+            packageTypeId = `PACKAGE-TYPE-${packageTypeName.toUpperCase()}-${moment().format('DDMMYYYYHHMMSS')}`;
+            newCollection = new Collection({
+                _id: new mongoose.Types.ObjectId(),
+                packageTypeId,
+                featuredImage: packageTypeFeaturedImage,
+                collectionName: packageTypeName
+            })
+        }
+
         const packages = {
             packageId,
             packageTypeId,
@@ -48,18 +69,20 @@ export const addPackage = async(req, res)=>{
             price,
             destinationType,
             destinationName,
-            packageTypeName
+            packageTypeName,
+            packageTypeObjRef: oldCollection ? oldCollection._id : newCollection._id
         }
-        const newCollection = new Collection({
-            _id: new mongoose.Types.ObjectId(),
-            packageTypeId,
-            featuredImage: packageTypeFeaturedImage,
-            collectionName: packageTypeName
-        })
-        const newPackage = new Packages({...packages, packageTypeObjRef: newCollection._id})
-        newCollection.packages.push(newPackage._id)
+        
+        const newPackage = new Packages(packages)
         let savedPackage = await newPackage.save();
-        let savedCollection = await newCollection.save();
+
+        if(!oldCollection) {
+            newCollection.packages.push(newPackage._id)
+            await newCollection.save();
+        } else {
+            oldCollection.packages.push(newPackage._id);
+            await oldCollection.save();
+        }
         res.status(200).json({status: true, savedPackage})
     }catch(err){
         console.log(err)
