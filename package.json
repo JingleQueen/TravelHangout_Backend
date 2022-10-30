@@ -5,10 +5,10 @@
   "main": "index.js",
   "scripts": {
     "clean": "rm -rf build && mkdir build",
-    "build-server": "babel -d ./build . -s",
+    "build-server": "babel -d ./build src -s",
     "build": "npm run clean && npm run build-server",
-    "start": "node ./build/index.js",
-    "start:dev": "cross-env NODE_ENV=development nodemon --exec  ./node_modules/.bin/babel-node ./server.js"
+    "start": "node ./build/server.js",
+    "start:dev": "cross-env NODE_ENV=development nodemon --exec  ./node_modules/.bin/babel-node src/server.js"
   },
   "author": "",
   "license": "ISC",
