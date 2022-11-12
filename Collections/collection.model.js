@@ -16,6 +16,9 @@ const schema = new Schema({
     }],
     packageTypeId:{
         type:String,
+    },
+    title:{
+        type:String
     }
 })
 

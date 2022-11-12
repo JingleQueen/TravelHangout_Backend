@@ -7,11 +7,23 @@ export const listPackage = async (req , res)=>{
     let packageList = await Packages.find();
     let data = packageList.map(item =>{
         return {
-            id:item.id,
-            name:item.name,
-            destination:item.destination,
-            region:item.region,
-            interest:item.interest
+            // id:item.id,
+            // name:item.name,
+            // destination:item.destination,
+            // region:item.region,
+            // interest:item.interest
+            name:item.name, 
+            destination:item.destination, 
+            region:item.region, 
+            packageTypeName:item.packageTypeName,
+            packageTypeFeaturedImage:item.packageTypeFeaturedImage,
+            interest:item.interest,
+            duration:item.duration,
+            covers:item.covers,
+            description:item.description,
+            price:item.price,
+            destinationType:item.destinationType,
+            destinationName:item.destinationName,
         };
     })
     return res.send({status: true, data}).status(200)

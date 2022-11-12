@@ -8,7 +8,8 @@ export const listCollection = async (req, res) =>{
                 featuredImage: item.featuredImage,
                 collectionName: item.collectionName,
                 packages: item.packages,
-                id: item.id
+                id: item.id,
+                title:item.title
             };
     })
     return res.send({status: true, data}).status(200)
@@ -23,7 +24,8 @@ export const addCollection = async (req, res) =>{
         const collection = {
             featuredImage: featuredImage,
             collectionName: collectionName,
-            packageTypeId: id
+            packageTypeId: id,
+            title
         }
         console.log(collection)
         const newCollection = new Collection(collection)
