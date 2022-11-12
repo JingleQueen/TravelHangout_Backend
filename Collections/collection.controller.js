@@ -1,3 +1,4 @@
+import moment from 'moment';
 import Collection from "./collection.model";
 
 export const listCollection = async (req, res) =>{
@@ -7,7 +8,8 @@ export const listCollection = async (req, res) =>{
                 featuredImage: item.featuredImage,
                 collectionName: item.collectionName,
                 packages: item.packages,
-                id: item.id
+                id: item.id,
+                title:item.title
             };
     })
     return res.send({status: true, data}).status(200)
@@ -16,38 +18,25 @@ export const listCollection = async (req, res) =>{
 
 export const addCollection = async (req, res) =>{
     try{
-
-        let id = + new Date();
-        let {body : {featuredImage = null, collectionName = null, packages } } = req || null;
-
+        const collectionName = req.body.collectionName;
+        const featuredImage = req.file.originalname;
+        let id = `PACKAGE-TYPE-${collectionName.toUpperCase()}-${moment().format('DDMMYYYYHHMMSS')}`;
         const collection = {
-            featuredImage,
-            collectionName,
-            packages,
-            id
+            featuredImage: featuredImage,
+            collectionName: collectionName,
+            packageTypeId: id,
+            title
         }
+        console.log(collection)
         const newCollection = new Collection(collection)
         let savedCollection = await newCollection.save();
         console.log(savedCollection, "savedCollection")
-        let collectionList = await Collection.find();
-        let data = collectionList.map(item =>{
-            return{
-
-                featuredImage: item.featuredImage,
-                collectionName: item.collectionName,
-                packages: item.packages,
-                id: item.id
-            };
-        })
-        res.status(200).json({status: true, data})
-    }catch(e){
-        console.log(e);
-
+        res.status(200).json({status: true, savedCollection})
+    }catch(err){
+        console.log(err);
+        res.status(500).json({status: false, error: err.message})
     }
-
 }
-
-
 
 export const deleteCollection = async(req,res) =>{
     try {
