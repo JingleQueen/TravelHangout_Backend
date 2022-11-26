@@ -1,10 +1,11 @@
 import Express  from "express";
-import { listPackage, addPackage } from "./package.controller";
+import { listPackage, addPackage, deletePackage } from "./package.controller";
 
 const packRouter = Express.Router();
 
 packRouter
 .get('/', listPackage)
 .post('/add', addPackage)
+.delete('/delete/:packageId', deletePackage)
 
 export default packRouter;

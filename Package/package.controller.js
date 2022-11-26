@@ -13,6 +13,7 @@ export const listPackage = async (req , res)=>{
             // region:item.region,
             // interest:item.interest
             name:item.name, 
+            packageId:item.packageId,
             destination:item.destination, 
             region:item.region, 
             packageTypeName:item.packageTypeName,
@@ -105,11 +106,11 @@ export const addPackage = async(req, res)=>{
 
 export const deletePackage = async(req, res) =>{
     try{
-        const {id} = req.params;
-        const deletePackages = await Packages.deleteOne({id});
-        req.send({"status": true, "data":deletePackages});
+        const {packageId} = req.params;
+        const deletePackages = await Packages.deleteOne({packageId});
+        res.send({"status": true, "data":deletePackages});
     }
     catch{
-        req.status(500).send("Internal server error")
+        res.status(500).send("Internal server error")
     }
 }
