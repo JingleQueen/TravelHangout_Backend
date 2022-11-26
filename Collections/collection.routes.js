@@ -10,6 +10,6 @@ const collectionRouter = Express.Router();
 collectionRouter
 .get('/list', listCollection)
 .post('/add', type, addCollection)
-.delete('/delete/:id', deleteCollection)
+.delete('/delete/:packageTypeId', deleteCollection)
 
 export default collectionRouter;

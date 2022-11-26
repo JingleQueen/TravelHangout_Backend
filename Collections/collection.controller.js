@@ -19,6 +19,7 @@ export const listCollection = async (req, res) =>{
 export const addCollection = async (req, res) =>{
     try{
         const collectionName = req.body.collectionName;
+        const title = req.body.title;
         const featuredImage = req.file.originalname;
         let id = `PACKAGE-TYPE-${collectionName.toUpperCase()}-${moment().format('DDMMYYYYHHMMSS')}`;
         const collection = {
@@ -40,8 +41,8 @@ export const addCollection = async (req, res) =>{
 
 export const deleteCollection = async(req,res) =>{
     try {
-        const {id} = req.params;
-        const deleteCollection = await Collection.findByIdAndDelete({id});
+        const {packageTypeId} = req.params;
+        const deleteCollection = await Collection.findByIdAndDelete({packageTypeId});
         res.send({status:true, "data": deleteCollection})
     } catch (error) {
         res.send(500).send("Internal server error")
